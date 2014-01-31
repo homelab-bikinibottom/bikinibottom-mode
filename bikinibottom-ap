@@ -1,0 +1,16 @@
+#!/bin/sh
+
+ip link set wlan0 up
+sleep 10
+#rmmod usbserial
+modprobe usbserial vendor=0x201e product=0x10f8
+(
+   while : ; do
+       wvdial
+       sleep 10
+   done
+) &
+route add -net 192.168.12.0 netmask 255.255.255.0 gw 192.168.12.1 dev wlan0
+route add -net 0.0.0.0 dev ppp0
+
+create_ap --driver rtl871xdrv --no-virt wlan0 ppp0 bikinibottom 1223334444

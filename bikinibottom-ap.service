@@ -1,0 +1,11 @@
+[Unit]
+Description=Run AP Service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/bash ./home/spondbob/projects/bikinibottom-ap/bikinibottom-ap
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target
+
