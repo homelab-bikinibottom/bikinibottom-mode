@@ -6,23 +6,19 @@ ip link set wlan0 up
 # Main route
 route add -net 192.168.12.0 netmask 255.255.255.0 gw 192.168.12.1 dev wlan0
 
-# Wait for modem to ready
+# Wait for attached devices
 sleep 5
 
-# Check if modem plugged
-command=`lsusb | grep "201e:10f8"`
-if [ "$command" == "" ]; then
-  # Start wifi only
-  create_ap --driver rtl871xdrv --no-virt -n wlan0 bikinibottom 1223334444
-else
+connect_to_internet()
+{
   # Remove if usbserial module already loaded before
   command=`lsmod | grep usbserial`
   if [ "$command" != "" ]; then
     rmmod usbserial
   fi
 
-  # Wait for another seconds
-  sleep 5
+  # Wait for modem to ready
+  sleep 10
 
   # Load module
   modprobe usbserial vendor=0x201e product=0x10f8
@@ -38,6 +34,24 @@ else
   # Some routing
   route add -net 0.0.0.0 dev ppp0
 
-  # Fire up the wifi
+  # Fire up the AP with internet sharing
   create_ap --driver rtl871xdrv --no-virt wlan0 ppp0 bikinibottom 1223334444
+}
+
+# Check if modem is attached
+command=`lsusb | grep "201e:10f8"`
+if [ "$command" == "" ]; then
+  command=`lsusb | grep "05c6:f000"`
+  if [ "$command" == "" ]; then
+    # The modem isn't attached, start wifi only
+    create_ap --driver rtl871xdrv --no-virt -n wlan0 bikinibottom 1223334444
+
+    # Script is done here		
+    exit 1
+  else
+    # It's attached but need something to do first
+    eject /dev/sr0
+  fi
 fi
+
+connect_to_internet
