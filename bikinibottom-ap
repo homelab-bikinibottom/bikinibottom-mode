@@ -1,16 +1,22 @@
 #!/bin/sh
 
+# Wait for attached devices
+sleep 3
+
 # Call lsusb at first
 devices=`lsusb`
+
+# Check if the WiFi device is attached
+if [ "`echo $devices | grep 7392:7811`" == "" ]; then
+  # WiFi device isn't available. Nothing to do
+  exit 1
+fi
 
 # Enable the device
 ip link set wlan0 up
 
 # Main route
 route add -net 192.168.12.0 netmask 255.255.255.0 gw 192.168.12.1 dev wlan0
-
-# Wait for attached devices
-sleep 5
 
 connect_to_internet()
 {
