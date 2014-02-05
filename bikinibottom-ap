@@ -1,5 +1,7 @@
 #!/bin/sh
 
+devices=`lsusb`
+
 # Enable the device
 ip link set wlan0 up
 
@@ -39,10 +41,8 @@ connect_to_internet()
 }
 
 # Check if modem is attached
-command=`lsusb | grep "201e:10f8"`
-if [ "$command" == "" ]; then
-  command=`lsusb | grep "05c6:f000"`
-  if [ "$command" == "" ]; then
+if [ "`echo $devices | grep 201e:10f8`" == "" ]; then
+  if [ "`echo $devices | grep 05c6:f000`" == "" ]; then
     # The modem isn't attached, start wifi only
     create_ap --driver rtl871xdrv --no-virt -n wlan0 bikinibottom 1223334444
 
