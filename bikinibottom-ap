@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Wait for attached devices
-sleep 3
+sleep 5
 
 # Call lsusb at first
 devices=`lsusb`
@@ -27,7 +27,7 @@ connect_to_internet()
   fi
 
   # Wait for modem to ready
-  sleep 10
+  sleep 15
 
   # Load module
   modprobe usbserial vendor=0x201e product=0x10f8
@@ -62,3 +62,4 @@ if [ "`echo $devices | grep 201e:10f8`" == "" ]; then
 fi
 
 connect_to_internet
+
