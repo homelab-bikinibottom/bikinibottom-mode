@@ -1,0 +1,68 @@
+#!/bin/sh
+
+# Wait for attached devices
+sleep 5
+
+# Call lsusb at first
+devices=`lsusb`
+
+# Check if the WiFi device is attached
+if [ "`echo $devices | grep 7392:7811`" == "" ]; then
+  # WiFi device isn't available. Nothing to do
+  exit 1
+fi
+
+# Enable the device
+ip link set wlan0 up
+
+# Main route
+route add -net 192.168.12.0 netmask 255.255.255.0 gw 192.168.12.1 dev wlan0
+
+connect_to_internet()
+{
+  # Remove if usbserial module already loaded before
+  command=`lsmod | grep usbserial`
+  if [ "$command" != "" ]; then
+    rmmod usbserial
+  fi
+
+  # Wait for modem to ready
+  sleep 15
+
+  # Load module
+  modprobe usbserial vendor=0x201e product=0x10f8
+
+  # Keep dials if not connected
+  (
+     while : ; do
+         wvdial
+         sleep 5
+     done
+  ) &
+
+  # Wait while modem is dialing
+  sleep 10
+
+  # Some routing
+  route add -net 0.0.0.0 dev ppp0
+
+  # Fire up the AP with internet sharing
+  create_ap --driver rtl871xdrv --no-virt wlan0 ppp0 bikinibottom 1223334444
+}
+
+# Check if modem is attached
+if [ "`echo $devices | grep 201e:10f8`" == "" ]; then
+  if [ "`echo $devices | grep 05c6:f000`" == "" ]; then
+    # The modem isn't attached, start wifi only
+    create_ap --driver rtl871xdrv --no-virt -n wlan0 bikinibottom 1223334444
+
+    # Script is done here		
+    exit 1
+  else
+    # It's attached but need something to do first
+    eject /dev/sr0
+  fi
+fi
+
+connect_to_internet
+

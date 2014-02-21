@@ -1,0 +1,12 @@
+[Unit]
+Description=bikinibottom mode
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/sh /home/spondbob/projects/bikinibottom-mode/bikinibottom-mode.sh
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target
+
