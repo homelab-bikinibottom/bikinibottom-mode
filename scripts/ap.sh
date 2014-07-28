@@ -27,7 +27,7 @@ connect_to_internet()
   fi
 
   # Wait for modem to ready
-  sleep 15
+  sleep 20
 
   # Load module
   modprobe usbserial vendor=0x201e product=0x10f8
@@ -35,7 +35,7 @@ connect_to_internet()
   # Keep dials if not connected
   (
      while : ; do
-         wvdial
+         wvdial > /var/log/wvdial.log
          sleep 5
      done
   ) &
