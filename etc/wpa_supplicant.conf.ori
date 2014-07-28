@@ -1,0 +1,5 @@
+network={
+	ssid="homie"
+	#psk="223334444"
+	psk=66f9ae429210f4655a9ccb74f9433f00b72a3c20da986d4a8db480c0eae0f051
+}
