@@ -17,4 +17,5 @@ and following scripts:
 Location of the files:
 
 - bikinibottom-mode.service: /etc/systemd/system/
-- MODE.txt: /dev/mmcblk0p1/ mounted on /boot/
+- MODE.txt: /boot/bikinibottom-mode/
+- scripts/*: /boot/bikinibottom-mode/scripts/
