@@ -19,3 +19,4 @@ Location of the files:
 - bikinibottom-mode.service: /etc/systemd/system/
 - MODE.txt: /boot/bikinibottom-mode/
 - scripts/*: /boot/bikinibottom-mode/scripts/
+- etc/*: /boot/bikinibottom-mode/etc/
